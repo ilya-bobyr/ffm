@@ -19,7 +19,23 @@ function ffm
         set -l result (eval $files_cmd | \
             fzf \
                 --ansi \
-                --preview "if test -d '$dir/{}'; then exa --color=always --icons --group-directories-first '$dir/{}' 2>/dev/null || ls -1 '$dir/{}' 2>/dev/null; else bat_output=\$(bat --color=always --style=plain --line-range=:20 '$dir/{}' 2>&1); if echo \"\$bat_output\" | grep -q 'Binary content'; then echo 'Preview not available'; else echo \"\$bat_output\" || head -20 '$dir/{}' 2>/dev/null || echo 'Preview not available'; fi; fi" \
+                --preview "
+                  if test -d '$dir/{}'
+                      exa --color=always --icons --group-directories-first '$dir/{}' 2>/dev/null
+                          or ls -1 '$dir/{}' 2>/dev/null
+                  else
+                      set bat_output (
+                          bat --color=always --style=plain --line-range=:20 '$dir/{}' 2>&1
+                      )
+                      if printf '%s\n' \$bat_output | grep -q 'Binary content'
+                          echo 'Preview not available'
+                      else
+                          printf '%s\n' \$bat_output
+                              or head -20 '$dir/{}' 2>/dev/null
+                              or echo 'Preview not available'
+                      end
+                  end
+                  " \
                 --preview-window=right:50%:wrap \
                 --height=15 \
                 --layout=reverse \
@@ -37,7 +53,8 @@ function ffm
                 --footer "Nav with Ctrl+hjkl or arrows" \
                 --pointer='▶' \
                 --marker='●' \
-                --prompt="$prompt_path/")
+                --prompt="$prompt_path/"
+        )
         
         # Check for special commands
         if test -f $temp_file
