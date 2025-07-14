@@ -21,18 +21,18 @@ function ffm
             | fzf \
                 --ansi \
                 --preview "
-                  if test -d '$dir/{}'
-                      exa --color=always --icons --group-directories-first '$dir/{}' 2>/dev/null
-                          or ls -1 '$dir/{}' 2>/dev/null
+                  if test -d '$dir'/{}
+                      exa --color=always --icons --group-directories-first '$dir'/{} 2>/dev/null
+                          or ls -1 '$dir'/{} 2>/dev/null
                   else
                       set bat_output (
-                          bat --color=always --style=plain --line-range=:20 '$dir/{}' 2>&1
+                          bat --color=always --style=plain --line-range=:20 '$dir'/{} 2>&1
                       )
                       if printf '%s\n' \$bat_output | grep -q 'Binary content'
                           echo 'Preview not available'
                       else
                           printf '%s\n' \$bat_output
-                              or head -20 '$dir/{}' 2>/dev/null
+                              or head -20 '$dir'/{} 2>/dev/null
                               or echo 'Preview not available'
                       end
                   end
