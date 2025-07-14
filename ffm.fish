@@ -1,17 +1,17 @@
 function ffm
     set -l dir (pwd)
-    
+
     while true
         # Create temp file for special commands
         set -l temp_file (mktemp)
-        
+
         # Create prompt with abbreviated path (last 2 directories)
         set -l prompt_path (echo $dir | sed 's|.*/\([^/]*/[^/]*\)$|\1|')
         if test "$prompt_path" = "$dir"
             # If path is short, just remove leading slash if present
             set prompt_path (echo $dir | sed 's|^/||')
         end
-        
+
         # Run fzf with search enabled by default
         set -l result (
             ls -A --color=always $dir \
@@ -54,30 +54,30 @@ function ffm
                 --marker='●' \
                 --prompt="$prompt_path/"
         )
-        
+
         # Check for special commands
         if test -f $temp_file
             set -l command (cat $temp_file)
             rm $temp_file
-            
+
             if test "$command" = "PARENT"
                 set dir (realpath "$dir/..")
                 continue
             end
         end
-        
+
         # Clean up temp file
         test -f $temp_file && rm $temp_file
-        
+
         # Handle normal exit (ctrl-c, esc)
         if test -z "$result"
             cd "$dir"
             return
         end
-        
+
         # Strip color codes from result to get actual filename
         set -l clean_result (echo $result | sed 's/\x1b\[[0-9;]*m//g')
-        
+
         # Handle selection
         set -l path "$dir/$clean_result"
         if test -d "$path"
