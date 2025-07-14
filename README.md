@@ -13,7 +13,7 @@
 - Icons and color support with Nerd Fonts
 - Open files with `xdg-open`
 
-(Operations like copy, cut, paste, rename, etc. Will be added someday....) 
+(Operations like copy, cut, paste, rename, etc. Will be added soon) 
 
 ## ⚙️ Dependencies
 
