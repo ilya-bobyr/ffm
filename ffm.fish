@@ -44,6 +44,7 @@ function ffm
                 --bind "ctrl-j:down" \
                 --bind "ctrl-k:up" \
                 --bind "ctrl-h:execute(echo 'PARENT' > $temp_file)+abort" \
+                --bind "ctrl-w:execute(echo 'PARENT' > $temp_file)+abort" \
                 --bind "ctrl-l:accept" \
                 --bind "down:down" \
                 --bind "up:up" \
