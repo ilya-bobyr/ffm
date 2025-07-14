@@ -2,9 +2,6 @@ function ffm
     set -l dir (pwd)
     
     while true
-        # Get files in current directory with colors
-        set -l files_cmd "ls -A --color=always '$dir' | sort"
-        
         # Create temp file for special commands
         set -l temp_file (mktemp)
         
@@ -16,8 +13,10 @@ function ffm
         end
         
         # Run fzf with search enabled by default
-        set -l result (eval $files_cmd | \
-            fzf \
+        set -l result (
+            ls -A --color=always $dir \
+            | sort \
+            | fzf \
                 --ansi \
                 --preview "if test -d '$dir/{}'; then exa --color=always --icons --group-directories-first '$dir/{}' 2>/dev/null || ls -1 '$dir/{}' 2>/dev/null; else bat_output=\$(bat --color=always --style=plain --line-range=:20 '$dir/{}' 2>&1); if echo \"\$bat_output\" | grep -q 'Binary content'; then echo 'Preview not available'; else echo \"\$bat_output\" || head -20 '$dir/{}' 2>/dev/null || echo 'Preview not available'; fi; fi" \
                 --preview-window=right:50%:wrap \
