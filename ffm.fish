@@ -1,9 +1,11 @@
 function ffm
     set -l dir (pwd)
 
+    # Create temp file for special commands
+    set -l temp_file (mktemp fish-ffm-XXXXXXXX)
+
     while true
-        # Create temp file for special commands
-        set -l temp_file (mktemp)
+        echo -n >$temp_file
 
         # Create prompt with abbreviated path (last 2 directories)
         set -l prompt_path (echo $dir | sed 's|.*/\([^/]*/[^/]*\)$|\1|')
@@ -56,9 +58,8 @@ function ffm
         )
 
         # Check for special commands
-        if test -f $temp_file
+        if test -s $temp_file
             set -l command (cat $temp_file)
-            rm $temp_file
 
             if test "$command" = "PARENT"
                 set dir (realpath "$dir/..")
@@ -66,11 +67,10 @@ function ffm
             end
         end
 
-        # Clean up temp file
-        test -f $temp_file && rm $temp_file
-
         # Handle normal exit (ctrl-c, esc)
         if test -z "$result"
+            test -f $temp_file && rm $temp_file
+
             cd "$dir"
             return
         end
